@@ -8,7 +8,9 @@
     <span
       :class="[textClass, {'copyable-text-underline': !noUnderline}]"
       :style="cssProperties"
-    >{{ text }}</span>
+    >
+      {{ text }}
+    </span>
     
     <span v-if="end || middle">&nbsp;</span>
 
