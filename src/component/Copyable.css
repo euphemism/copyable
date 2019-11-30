@@ -1,0 +1,9 @@
+.copyable-button--color {
+  color: var(--copyable-decoration-color);
+}
+
+.copyable-text-underline {
+  border-bottom: 1px dotted var(--copyable-decoration-color);
+  margin-bottom: -1px;
+  position: relative;
+}
