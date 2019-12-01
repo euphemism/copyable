@@ -1,6 +1,6 @@
 {
   "name": "quasar-app-extension-copyable",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A Quasar UI extension for a copyable text component",
   "license": "MIT",
   "main": "src/index.js",
