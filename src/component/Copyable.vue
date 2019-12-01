@@ -34,10 +34,6 @@ const { getBrand, hexToRgb } = colors
 export default {
   name: 'Copyable',
   props: {
-    buttonOnRight: {
-      type: Boolean,
-      default: false
-    },
     color: {
       type: String,
       default: 'primary'
