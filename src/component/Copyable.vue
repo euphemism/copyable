@@ -4,47 +4,63 @@
     :style="cssDecorationColorProperties"
   >
     <span v-if="start || middle">&nbsp;</span>
-    
+
     <span
-      :class="[textClass, {'copyable-text-underline': !noUnderline}]"
+      ref="copyableText"
+      @click="copy"
+      :class="[textClass, { 'copyable-text-underline': !noUnderline }]"
       :style="cssProperties"
     >
       {{ text }}
+
+      <q-tooltip v-if="!hideTooltip && clickToCopy">click to copy</q-tooltip>
     </span>
-    
+
     <span v-if="end || middle">&nbsp;</span>
 
     <q-btn
-      :class="['copyable-button--color', {'q-ml-xs': !(middle || end)}]"
-      round
-      flat
-      size="0.7em"
+      v-if="!clickToCopy"
+      ref="copyButton"
+      @click="copy"
+      :class="['copyable-button--color', { 'q-ml-xs': !(middle || end) }]"
       :color="decorationColor"
       :icon="icon"
-      @click="copy"
-    />
+      flat
+      round
+      size="0.7em"
+    >
+      <q-tooltip v-if="!hideTooltip && !clickToCopy">click to copy</q-tooltip>
+    </q-btn>
   </span>
 </template>
 
 <script>
-import { colors, copyToClipboard, extend } from 'quasar'
-const csscolors = require('css-color-names')
-const { getBrand, hexToRgb } = colors
+import { colors, copyToClipboard, extend } from "quasar";
+const csscolors = require("css-color-names");
+const { getBrand, hexToRgb } = colors;
 
 export default {
-  name: 'Copyable',
+  name: "Copyable",
   props: {
+    clickToCopy: {
+      type: Boolean,
+      default: false
+    },
     color: {
       type: String,
-      default: 'primary'
+      default: "primary"
     },
     end: {
       type: Boolean,
       default: false
     },
+    hideTooltip: {
+      type: Boolean,
+      default: false
+    },
     icon: {
       type: String,
-      default: 'file_copy'
+      default: "file_copy"
     },
     middle: {
       type: Boolean,
@@ -64,67 +80,79 @@ export default {
     },
     text: {
       type: String,
-      default: ''
+      default: ""
     },
     textClass: {
       type: String,
-      default: ''
+      default: ""
     }
   },
   methods: {
     copy(e) {
+      if (e.target === this.$refs.copyableText) {
+        if (!this.clickToCopy) {
+          return;
+        }
+      }
+
       copyToClipboard(this.text)
         .then(() => {
-          this.$q.notify('Copied to clipboard')
+          this.$q.notify("Copied to clipboard");
         })
         .catch(() => {
           this.$q.notify({
-            color: 'negative',
-            message: 'Failed to copy to clipboard'
-          })
-        })
+            color: "negative",
+            message: "Failed to copy to clipboard"
+          });
+        });
     }
   },
   computed: {
     decorationColor() {
-      const requestedColor = this.color.toLowerCase()
-      const brandColor = getBrand(requestedColor)
+      const requestedColor = this.color.toLowerCase();
+      const brandColor = getBrand(requestedColor);
 
       if (null === brandColor) {
         if (csscolors.hasOwnProperty(requestedColor)) {
-          return csscolors[requestedColor]
+          return csscolors[requestedColor];
         }
 
-        return requestedColor
+        return requestedColor;
       }
 
-      return brandColor
+      return brandColor;
     },
     cssDecorationColorProperties() {
       return {
-        '--copyable-decoration-color': this.decorationColor
-      }
+        "--copyable-decoration-color": this.decorationColor
+      };
     },
     cssProperties() {
-      const rgb = hexToRgb(this.decorationColor)
-      const opacity = this.$q.dark.isActive ? 0.2 : 0.1
+      const rgb = hexToRgb(this.decorationColor);
+      const opacity = this.$q.dark.isActive ? 0.2 : 0.1;
 
-      const properties = {
-        'word-break': 'break-all'
-      }
+      let properties = {
+        "word-break": "break-all"
+      };
 
       if (!this.noHighlight) {
-        return extend(properties, {
+        properties = extend(properties, {
           background: `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${opacity})`
-        })
+        });
       }
 
-      return properties
+      if (this.clickToCopy) {
+        properties = extend(properties, {
+          cursor: "pointer"
+        });
+      }
+
+      return properties;
     }
   }
-}
+};
 </script>
 
 <style scoped>
-  @import './Copyable.css';
+@import "./Copyable.css";
 </style>
