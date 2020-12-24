@@ -102,8 +102,8 @@ export default {
         })
         .catch(() => {
           this.$q.notify({
-            color: "negative",
-            message: "Failed to copy to clipboard"
+            message: "Failed to copy to clipboard",
+            type: "negative"
           });
         });
     }
