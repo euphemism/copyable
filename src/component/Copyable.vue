@@ -36,8 +36,9 @@
 
 <script>
 import { colors, copyToClipboard, extend } from "quasar";
-const csscolors = require("css-color-names");
 const { getBrand, hexToRgb } = colors;
+
+import csscolors from "css-color-names";
 
 export default {
   name: "Copyable",
